@@ -577,12 +577,13 @@ function showDetail(person) {
   const addRow = (l, v) => { if (v) html += `<div class="detail-row"><div class="detail-label">${l}</div><div class="detail-value">${v}</div></div>`; };
   html += '<div style="margin-top:16px">';
   addRow('Gender', person.sex === 'M' ? 'Male' : person.sex === 'F' ? 'Female' : 'Unknown');
-  addRow('Born', person.birth?.date || ''); addRow('Died', person.death?.date || ''); addRow('Address', person.residence?.address || '');
+  addRow('Born', person.birth?.date || ''); addRow('Died', person.death?.date || '');
+  if (person.residence?.address) { const last = person.residence.address.split(',').pop().trim().replace(/\d{5}(-\d{4})?$/, '').trim(); if (last) addRow('Location', last); }
   if (currentData) {
     for (const fc of (person.families_child || [])) { const fam = currentData.families[fc]; if (fam) { if (fam.husband) addRow('Father', currentData.individuals[fam.husband]?.names?.[0] || ''); if (fam.wife) addRow('Mother', currentData.individuals[fam.wife]?.names?.[0] || ''); const siblings = fam.children.filter(c => c !== person.id).map(c => currentData.individuals[c]?.names?.[0]).filter(Boolean); if (siblings.length) addRow('Siblings', siblings.join(', ')); } }
     for (const fs of (person.families_spouse || [])) { const fam = currentData.families[fs]; if (fam) { const spouseId = fam.husband === person.id ? fam.wife : fam.husband; if (spouseId) addRow('Spouse', currentData.individuals[spouseId]?.names?.[0] || ''); const children = fam.children.map(c => currentData.individuals[c]?.names?.[0]).filter(Boolean); if (children.length) addRow('Children', children.join(', ')); } }
   }
-  if (person.notes?.length) addRow('Notes', person.notes.join('; '));
+
   html += '</div>';
 
   if (person.id === currentEgoId && Object.keys(kinshipCache).length > 0) {
