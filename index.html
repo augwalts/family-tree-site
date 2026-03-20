@@ -126,6 +126,7 @@
     font-size: 13px; cursor: pointer; transition: background 0.2s;
   }
   .perspective-btn:hover { background: #d49530; }
+  .spotlight-why { font-size: 12px; color: #8a6d2b; margin-top: 8px; font-style: italic; line-height: 1.4; }
 
   .relatives-section { margin-top: 16px; }
   .relatives-section h3 {
@@ -308,6 +309,55 @@ const KINSHIP_TERMS = {
 };
 function lookupTerm(key) { return KINSHIP_TERMS[key] || null; }
 
+const RELATIONSHIP_WHY = {
+  father:"Your father.",mother:"Your mother.",husband:"Your husband.",wife:"Your wife.",son:"Your son.",daughter:"Your daughter.",
+  elder_brother:"Your older brother \u2014 born before you to the same parents.",younger_brother:"Your younger brother \u2014 born after you to the same parents.",
+  elder_sister:"Your older sister \u2014 born before you to the same parents.",younger_sister:"Your younger sister \u2014 born after you to the same parents.",
+  paternal_grandfather:"Your father's father \u2014 \u7238\u7238 is the paternal grandfather.",paternal_grandmother:"Your father's mother \u2014 \u5ad2\u5ad2 is the paternal grandmother.",
+  maternal_grandfather:"Your mother's father \u2014 \u5916\u516c uses \u5916 (outside) to mark the maternal line.",maternal_grandmother:"Your mother's mother \u2014 \u5916\u5a46 uses \u5916 (outside) to mark the maternal line.",
+  paternal_great_grandfather:"Your paternal grandfather's father.",paternal_great_grandmother:"Your paternal grandfather's mother.",
+  maternal_great_grandfather:"Your maternal grandfather's father.",maternal_great_grandmother:"Your maternal grandfather's mother.",
+  father_elder_brother:"Your father's older brother \u2014 \u4f2f\u7236 distinguishes elder uncles from younger ones (\u53d4\u53d4).",
+  father_younger_brother:"Your father's younger brother \u2014 \u53d4\u53d4 is distinct from \u4f2f\u7236 (elder uncle).",
+  father_elder_sister:"Your father's older sister \u2014 \u59d1\u5abd for elder paternal aunts.",
+  father_younger_sister:"Your father's younger sister \u2014 \u59d1\u59d0 for younger paternal aunts.",
+  father_sister_husband:"Your father's sister's husband \u2014 \u59d1\u4e08 is the paternal aunt's spouse.",
+  father_elder_brother_wife:"Your father's older brother's wife \u2014 \u4f2f\u5a18 is the elder paternal uncle's wife.",
+  father_younger_brother_wife:"Your father's younger brother's wife \u2014 \u963f\u5b38 is the younger paternal uncle's wife.",
+  mother_brother:"Your mother's brother \u2014 \u8205\u7236 covers all maternal uncles.",
+  mother_elder_sister:"Your mother's older sister \u2014 \u59e8\u5abd for elder maternal aunts.",
+  mother_younger_sister:"Your mother's younger sister \u2014 \u963f\u59e8 for younger maternal aunts.",
+  mother_sister_husband:"Your mother's sister's husband \u2014 \u59e8\u4e08.",mother_brother_wife:"Your mother's brother's wife \u2014 \u8205\u6bcd.",
+  tong_elder_brother:"An older male cousin through your father's brothers \u2014 \u5802 means shared paternal bloodline (same surname).",
+  tong_younger_brother:"A younger male cousin through your father's brothers \u2014 \u5802 means shared paternal bloodline.",
+  tong_elder_sister:"An older female cousin through your father's brothers \u2014 \u5802 means shared paternal bloodline.",
+  tong_younger_sister:"A younger female cousin through your father's brothers \u2014 \u5802 means shared paternal bloodline.",
+  biu_elder_brother:"An older male cousin from outside the paternal bloodline \u2014 \u8868 covers maternal cousins and father's sisters' children.",
+  biu_younger_brother:"A younger male cousin from outside the paternal bloodline \u2014 \u8868 covers maternal cousins and father's sisters' children.",
+  biu_elder_sister:"An older female cousin from outside the paternal bloodline \u2014 \u8868 covers maternal cousins and father's sisters' children.",
+  biu_younger_sister:"A younger female cousin from outside the paternal bloodline \u2014 \u8868 covers maternal cousins and father's sisters' children.",
+  brother_son:"Your brother's son \u2014 \u59ea\u4ed4. Brothers' children stay in the paternal line.",brother_daughter:"Your brother's daughter \u2014 \u59ea\u5973.",
+  sister_son:"Your sister's son \u2014 \u5916\u7525. Uses \u5916 because the child is under the brother-in-law's bloodline.",sister_daughter:"Your sister's daughter \u2014 \u5916\u7525\u5973.",
+  son_son:"Your son's son \u2014 \u5b6b\u4ed4.",son_daughter:"Your son's daughter \u2014 \u5b6b\u5973.",
+  daughter_son:"Your daughter's son \u2014 \u5916\u5b6b. Uses \u5916 because the child carries a different surname.",daughter_daughter:"Your daughter's daughter \u2014 \u5916\u5b6b\u5973.",
+  husband_father:"Your husband's father \u2014 \u8001\u7238.",husband_mother:"Your husband's mother \u2014 \u5976\u5976.",
+  wife_father:"Your wife's father \u2014 \u5916\u7236.",wife_mother:"Your wife's mother \u2014 \u5916\u6bcd.",
+  husband_elder_brother:"Your husband's older brother \u2014 \u5927\u4f2f.",husband_younger_brother:"Your husband's younger brother \u2014 \u5c0f\u53d4.",
+  husband_elder_sister:"Your husband's older sister \u2014 \u59d1\u5976.",husband_younger_sister:"Your husband's younger sister \u2014 \u59d1\u4ed4.",
+  wife_elder_brother:"Your wife's older brother \u2014 \u5927\u8205.",wife_younger_brother:"Your wife's younger brother \u2014 \u8205\u4ed4.",
+  wife_elder_sister:"Your wife's older sister \u2014 \u5927\u59e8.",wife_younger_sister:"Your wife's younger sister \u2014 \u59e8\u4ed4.",
+  daughter_in_law:"Your son's wife \u2014 \u65b0\u62b1.",son_in_law:"Your daughter's husband \u2014 \u5973\u5a7f.",
+  paternal_great_uncle_elder:"Your paternal grandfather's older brother.",paternal_great_uncle_younger:"Your paternal grandfather's younger brother.",
+  paternal_great_uncle_elder_wife:"Your paternal grandfather's older brother's wife.",paternal_great_uncle_younger_wife:"Your paternal grandfather's younger brother's wife.",
+  paternal_great_aunt:"Your paternal grandfather's sister.",paternal_great_aunt_husband:"Your paternal grandfather's sister's husband.",
+  maternal_great_uncle:"Your maternal grandfather's brother.",maternal_great_uncle_wife:"Your maternal grandfather's brother's wife.",
+  maternal_great_aunt:"Your maternal grandfather's sister.",maternal_great_aunt_husband:"Your maternal grandfather's sister's husband.",
+  tong_elder_brother_wife:"\u5802\u54e5's wife.",tong_elder_sister_husband:"\u5802\u59d0's husband.",
+  tong_younger_brother_wife:"\u5802\u5f1f's wife.",tong_younger_sister_husband:"\u5802\u59b9's husband.",
+  biu_elder_brother_wife:"\u8868\u54e5's wife.",biu_elder_sister_husband:"\u8868\u59d0's husband.",
+  biu_younger_brother_wife:"\u8868\u5f1f's wife.",biu_younger_sister_husband:"\u8868\u59b9's husband."
+};
+
 // ══════════════════════════════════════════════════════════════
 // RELATIONSHIP ENGINE
 // ══════════════════════════════════════════════════════════════
@@ -443,18 +493,33 @@ let currentData = null, currentEgoId = null, kinshipCache = {}, transform = { x:
 
 function setEgo(personId) {
   if (!currentData) return;
+  const oldNode = layoutNodes.find(n => n.id === personId);
+  const oldX = oldNode ? oldNode.x : null;
+  const oldY = oldNode ? oldNode.y : null;
   currentEgoId = personId;
   kinshipCache = computeAllRelationships(personId, currentData.individuals, currentData.families);
   const person = currentData.individuals[personId];
   document.getElementById('ego-indicator').classList.add('active');
   document.getElementById('ego-name').textContent = person.names?.[0] || 'Unknown';
   render(currentData);
+  if (oldX !== null) {
+    const newNode = layoutNodes.find(n => n.id === personId);
+    if (newNode) { transform.x += (oldX - newNode.x) * transform.scale; transform.y += (oldY - newNode.y) * transform.scale; applyTransform(); }
+  }
 }
 
 function clearEgo() {
+  const wasEgo = currentEgoId;
+  const oldNode = wasEgo ? layoutNodes.find(n => n.id === wasEgo) : null;
+  const oldX = oldNode ? oldNode.x : null;
+  const oldY = oldNode ? oldNode.y : null;
   currentEgoId = null; kinshipCache = {};
   document.getElementById('ego-indicator').classList.remove('active');
   render(currentData);
+  if (oldX !== null) {
+    const newNode = layoutNodes.find(n => n.id === wasEgo);
+    if (newNode) { transform.x += (oldX - newNode.x) * transform.scale; transform.y += (oldY - newNode.y) * transform.scale; applyTransform(); }
+  }
 }
 
 const CATEGORY_ORDER = ['Spouse','Parents','Children','Siblings','Grandparents','Great-Grandparents','Uncles & Aunts','Cousins',"Cousins' Spouses",'Nieces & Nephews','Grandchildren','In-Laws'];
@@ -477,7 +542,7 @@ function render(data) {
     if (isEgoNode) classes.push('ego');
     group.setAttribute('class', classes.join(' '));
     group.setAttribute('transform', `translate(${n.x}, ${n.y})`);
-    group.onclick = (e) => { e.stopPropagation(); if (currentEgoId === n.id) { clearEgo(); } else { setEgo(n.id); } showDetail(n); };
+    group.onclick = (e) => { e.stopPropagation(); if (!currentEgoId) { setEgo(n.id); showDetail(currentData.individuals[n.id]); } else if (currentEgoId === n.id) { clearEgo(); closeDetail(); } else { showDetail(currentData.individuals[n.id]); } };
 
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     rect.setAttribute('class', 'node-bg'); rect.setAttribute('width', n.w); rect.setAttribute('height', n.h);
@@ -527,8 +592,7 @@ function populateSearch(individuals) {
 
 function onSearchSelect(personId) {
   if (!personId || !currentData) return;
-  const person = currentData.individuals[personId];
-  if (person) { setEgo(personId); showDetail(person); scrollToNode(personId); }
+  if (currentData.individuals[personId]) switchPerspective(personId);
 }
 
 function scrollToNode(personId) {
@@ -566,13 +630,14 @@ function showDetail(person) {
   let html = '';
   const kin = kinshipCache[person.id];
   if (currentEgoId && kin && person.id !== currentEgoId) {
-    html += `<div class="spotlight-card"><div class="spotlight-chinese">${kin.chinese}</div><div class="spotlight-jyutping">${kin.jyutping}</div><div class="spotlight-english">${kin.english}</div></div>`;
+    const why = RELATIONSHIP_WHY[kin.key] || '';
+    html += `<div class="spotlight-card"><div class="spotlight-chinese">${kin.chinese}</div><div class="spotlight-jyutping">${kin.jyutping}</div><div class="spotlight-english">${kin.english}</div>${why ? `<div class="spotlight-why">${why}</div>` : ''}<button class="perspective-btn" onclick="switchPerspective('${person.id}')">Switch to ${person.names?.[0] || 'this person'}'s perspective</button></div>`;
   }
   html += `<h2>${person.names?.[0] || 'Unknown'}</h2>`;
   const altNames = person.names ? person.names.slice(1) : [];
   if (altNames.length) html += `<div style="font-size:18px;color:#555;margin-top:-10px;margin-bottom:16px">${altNames.join(' / ')}</div>`;
-  if (person.id !== currentEgoId) html += `<button class="perspective-btn" onclick="setEgo('${person.id}')">View from ${person.names?.[0] || 'this person'}'s perspective</button>`;
-  else html += `<div style="margin-bottom:12px;padding:6px 12px;background:#fff8e7;border-radius:6px;font-size:13px;color:#8a6d2b;display:inline-block">Currently viewing as this person</div>`;
+  if (person.id === currentEgoId) html += `<div style="margin-bottom:12px;padding:6px 12px;background:#fff8e7;border-radius:6px;font-size:13px;color:#8a6d2b;display:inline-block">Currently viewing as this person</div>`;
+  else if (!currentEgoId) html += `<button class="perspective-btn" onclick="switchPerspective('${person.id}')">View from ${person.names?.[0] || 'this person'}'s perspective</button>`;
 
   const addRow = (l, v) => { if (v) html += `<div class="detail-row"><div class="detail-label">${l}</div><div class="detail-value">${v}</div></div>`; };
   html += '<div style="margin-top:16px">';
@@ -598,6 +663,7 @@ function showDetail(person) {
   content.innerHTML = html; panel.classList.add('open');
 }
 
+function switchPerspective(personId) { if (!currentData) return; setEgo(personId); showDetail(currentData.individuals[personId]); scrollToNode(personId); }
 function showDetailById(personId) { if (!currentData || !personId) return; const person = currentData.individuals[personId]; if (person) { showDetail(person); scrollToNode(personId); } }
 function closeDetail() { document.getElementById('detail-panel').classList.remove('open'); }
 
