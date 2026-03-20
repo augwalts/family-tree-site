@@ -196,7 +196,7 @@
   </div>
 
   <div id="instructions">
-    Scroll to zoom &middot; Drag to pan &middot; Click a person for details &middot; Use "Set perspective" to see kinship terms
+    Scroll to zoom &middot; Drag to pan &middot; Click a person to see kinship terms &middot; Click again to deselect
   </div>
 </div>
 
@@ -477,7 +477,7 @@ function render(data) {
     if (isEgoNode) classes.push('ego');
     group.setAttribute('class', classes.join(' '));
     group.setAttribute('transform', `translate(${n.x}, ${n.y})`);
-    group.onclick = (e) => { e.stopPropagation(); showDetail(n); };
+    group.onclick = (e) => { e.stopPropagation(); if (currentEgoId === n.id) { clearEgo(); } else { setEgo(n.id); } showDetail(n); };
 
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     rect.setAttribute('class', 'node-bg'); rect.setAttribute('width', n.w); rect.setAttribute('height', n.h);
